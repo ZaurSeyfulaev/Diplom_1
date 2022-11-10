@@ -16,7 +16,7 @@ public class BunParameterizedTest {
         this.price = price;
     }
 
-    @Parameterized.Parameters(name ="Тестовые данные: {0}, {1}")
+    @Parameterized.Parameters(name = "Тестовые данные: {0}, {1}")
     public static Object[] createBunEntity() {
         return new Object[][]{
                 {"Белая булка", 100f},

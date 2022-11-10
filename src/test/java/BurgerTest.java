@@ -9,6 +9,7 @@ import praktikum.*;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
@@ -19,6 +20,9 @@ public class BurgerTest {
     @Mock
     private Ingredient ingredient;
 
+    @Mock
+    private Database database;
+
     @Spy
     private Burger burger;
 
@@ -26,28 +30,31 @@ public class BurgerTest {
     @Test
     public void setBunTest() {
         burger.setBuns(bun);
-        Mockito.verify(burger, Mockito.times(1)).setBuns(bun);
+        assertEquals(bun, burger.bun);
 
     }
 
     @Test
     public void addIngredientTest() {
-        burger.addIngredient(ingredient);
-        Mockito.verify(burger, Mockito.times(1)).addIngredient(ingredient);
+        addIngredientInList(1);
+        assertTrue(burger.ingredients.contains(ingredient));
+
     }
 
     @Test
     public void removeIngredientTest() {
         addIngredientInList(3);
         burger.removeIngredient(1);
-        Mockito.verify(burger, Mockito.times(1)).removeIngredient(1);
+        assertEquals(2, burger.ingredients.size());
     }
 
     @Test
     public void moveIngredientTest() {
         addIngredientInList(3);
-        burger.moveIngredient(1, 1);
-        Mockito.verify(burger, Mockito.times(1)).moveIngredient(1, 1);
+        Ingredient ingredientItem = Mockito.mock(Ingredient.class);
+        burger.addIngredient(ingredientItem);
+        burger.moveIngredient(3, 1);
+        assertEquals(ingredientItem, burger.ingredients.get(1));
     }
 
     @Test
@@ -63,8 +70,8 @@ public class BurgerTest {
     @Test
     public void getReceiptTest() {
         Database database = new Database();
-        List <Bun> buns = database.availableBuns();
-        List <Ingredient> ingredients= database.availableIngredients();
+        List<Bun> buns = database.availableBuns();
+        List<Ingredient> ingredients = database.availableIngredients();
         Mockito.when(bun.getName()).thenReturn(buns.get(1).name);
         burger.setBuns(bun);
         Mockito.when(ingredient.getType()).thenReturn(IngredientType.SAUCE);
