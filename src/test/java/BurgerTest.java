@@ -4,9 +4,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import praktikum.*;
-
-import java.util.List;
+import praktikum.Bun;
+import praktikum.Burger;
+import praktikum.Ingredient;
+import praktikum.IngredientType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,8 +21,6 @@ public class BurgerTest {
     @Mock
     private Ingredient ingredient;
 
-    @Mock
-    private Database database;
 
     @Spy
     private Burger burger;
@@ -69,15 +68,14 @@ public class BurgerTest {
 
     @Test
     public void getReceiptTest() {
-        Database database = new Database();
-        List<Bun> buns = database.availableBuns();
-        List<Ingredient> ingredients = database.availableIngredients();
-        Mockito.when(bun.getName()).thenReturn(buns.get(1).name);
+        Mockito.when(bun.getName()).thenReturn("black bun");
         burger.setBuns(bun);
         Mockito.when(ingredient.getType()).thenReturn(IngredientType.SAUCE);
-        Mockito.when(ingredient.getName()).thenReturn(ingredients.get(1).name);
+        Mockito.when(ingredient.getName()).thenReturn("hot space");
+        ingredient.getType();
+        ingredient.getName();
         addIngredientInList(1);
-        assertEquals(false, burger.getReceipt().isEmpty());
+        assertEquals(true, burger.getReceipt().contains("hot space"));
 
     }
 
