@@ -1,8 +1,8 @@
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import praktikum.Bun;
 import praktikum.Burger;
@@ -21,10 +21,12 @@ public class BurgerTest {
     @Mock
     private Ingredient ingredient;
 
-
-    @Spy
     private Burger burger;
 
+    @Before
+    public void setUp() {
+        burger = new Burger();
+    }
 
     @Test
     public void setBunTest() {
@@ -69,20 +71,42 @@ public class BurgerTest {
     @Test
     public void getReceiptTest() {
         Mockito.when(bun.getName()).thenReturn("black bun");
+        Mockito.when(bun.getPrice()).thenReturn(100f);
         burger.setBuns(bun);
         Mockito.when(ingredient.getType()).thenReturn(IngredientType.SAUCE);
         Mockito.when(ingredient.getName()).thenReturn("hot space");
-        ingredient.getType();
-        ingredient.getName();
-        addIngredientInList(1);
-        assertEquals(true, burger.getReceipt().contains("hot space"));
+        Mockito.when(ingredient.getPrice()).thenReturn(300f);
+
+        StringBuilder testBun = getReceiptAndPrice(10, bun.getPrice(), ingredient.getPrice());
+
+        assertEquals(burger.getReceipt(), testBun.toString());
 
     }
 
-    public void addIngredientInList(int index) {
+    private void addIngredientInList(int index) {
         for (int i = 0; i < index; i++) {
             burger.addIngredient(ingredient);
         }
     }
+
+    private StringBuilder getReceiptAndPrice(int ingredientCount, float bunPrice, float ingredientPrice) {
+        StringBuilder receiptAndPrice = new StringBuilder(String.format("(==== %s ====)%n", bun.getName()));
+        addIngredientInList(ingredientCount);
+        for (Ingredient ingredient : burger.ingredients) {
+            receiptAndPrice.append(String.format("= %s %s =%n", ingredient.getType().toString().toLowerCase(),
+                    ingredient.getName()));
+        }
+        float price = burgerPrice(bunPrice, ingredientPrice, ingredientCount);
+        receiptAndPrice.append(String.format("(==== %s ====)%n", bun.getName()));
+        receiptAndPrice.append(String.format("%nPrice: %f%n", price));
+
+        return receiptAndPrice;
+    }
+
+    private float burgerPrice(float bunPrice, float ingredientPrice, int ingredientCount) {
+        return bunPrice * 2 + ingredientPrice * ingredientCount;
+    }
+
+
 }
 
